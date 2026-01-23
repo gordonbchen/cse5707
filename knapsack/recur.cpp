@@ -11,16 +11,14 @@ int T(int i, int c, int* vs, int* ws, int C) {
         return it->second;
     }
 
-    int v;
     if ((i == 0) || (c == 0)) {
-        v = 0;
+        cache[idx] = 0;
+        return 0;
     }
-    else if (c < ws[i-1]) {
-        v = T(i-1, c, vs, ws, C);
+    if (c < ws[i-1]) {
+        return T(i-1, c, vs, ws, C);
     }
-    else {
-        v = std::max(T(i-1, c, vs, ws, C), T(i-1, c-ws[i-1], vs, ws, C) + vs[i-1]);
-    }
+    int v = std::max(T(i-1, c, vs, ws, C), T(i-1, c-ws[i-1], vs, ws, C) + vs[i-1]);
     cache[idx] = v;
     return v;
 }
