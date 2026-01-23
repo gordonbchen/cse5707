@@ -24,7 +24,7 @@ int main() {
     std::cin >> C;
 
     // DP.
-    int* T = (int*)malloc(sizeof(int) * ((N+1) * (C+1)));
+    int* T = (int*)calloc((N+1) * (C+1), sizeof(int));
 
     int idx, prev;
     for (int i = 1; i < N + 1; ++i) {
