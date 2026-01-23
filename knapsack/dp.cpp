@@ -13,9 +13,9 @@ int main() {
     int* vs = (int*)malloc(2 * sizeof(int) * N);
     int* ws = vs + N;
 
-    int idx, v, w;
+    int dummy, v, w;
     for (int i = 0; i < N; ++i) {
-        std::cin >> idx >> v >> w;
+        std::cin >> dummy >> v >> w;
         vs[i] = v;
         ws[i] = w;
     }
@@ -26,13 +26,16 @@ int main() {
     // DP.
     int* T = (int*)malloc(sizeof(int) * ((N+1) * (C+1)));
 
+    int idx, prev;
     for (int i = 1; i < N + 1; ++i) {
         for (int c = 1; c < C + 1; ++c) {
+            idx = i*(C+1) + c;
+            prev = idx - (C+1);
             if (c < ws[i-1]) {
-                T[i*(C+1) + c] = T[(i-1)*(C+1) + c];
+                T[idx] = T[prev];
             }
             else {
-                T[i*(C+1) + c] = std::max(T[(i-1)*(C+1) + c], T[(i-1)*(C+1) + c - ws[i-1]] + vs[i-1]);
+                T[idx] = std::max(T[prev], T[prev - ws[i-1]] + vs[i-1]);
             }
         }
     }
