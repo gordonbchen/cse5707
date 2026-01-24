@@ -75,9 +75,7 @@ double frac_ks_rev(const std::vector<Item>& items, int starti, int endi, int N, 
     return sol;
 }
 
-int main() {
-    auto start = std::chrono::high_resolution_clock::now();
-
+int knapsack() {
     // Parse data.
     int N;
     std::cin >> N;
@@ -98,21 +96,19 @@ int main() {
     // Sort descending by v/w.
     std::sort(items.begin(), items.end(), [](const Item& a, const Item& b) { return a.r > b.r; });
 
-    // NEW
-    PS_WEIGHTS.resize(N+1,0);
-    PS_VALUES.resize(N+1,0);
-    for (int i=0; i<N; i++)
-    {
-        PS_WEIGHTS[i+1] = PS_WEIGHTS[i] + items[i].w;
-        PS_VALUES[i+1] = PS_VALUES[i] + items[i].v;
+    // NEW: Build Prefix Sums
+    PS_WEIGHTS.assign(N + 1, 0);
+    PS_VALUES.assign(N + 1, 0);
+    for (int i = 0; i < N; i++) {
+        PS_WEIGHTS[i + 1] = PS_WEIGHTS[i] + items[i].w;
+        PS_VALUES[i + 1] = PS_VALUES[i] + items[i].v;
     }
 
     // Init lb.
     int remc;
     int lb = ks_greedy(items, C, N, &remc);
-    if (remc == 0) {
-        return lb;
-    }
+    // early exit
+    if (remc == 0) { return lb; }
 
     // Solve.
     using Node = std::tuple<double, int, int, int>;  // ub, item_i, v, c.
@@ -128,7 +124,7 @@ int main() {
 
         if (ub <= lb) { break; }
 
-        if (item_i == (N-1)) {
+        if (item_i == (N - 1)) {
             if (c >= items[item_i].w) {
                 v += items[item_i].v;
             }
@@ -136,22 +132,28 @@ int main() {
             continue;
         }
 
-        cand_ub = v + frac_ks(items, item_i+1, c, N, &endi, &remc);
+        cand_ub = v + frac_ks(items, item_i + 1, c, N, &endi, &remc);
         if (cand_ub > lb) {
-            pq.push({cand_ub, item_i+1, v, c});
+            pq.push({cand_ub, item_i + 1, v, c});
         }
 
         if (c < items[item_i].w) { continue; }
         v += items[item_i].v;
         lb = std::max(lb, v);
         c -= items[item_i].w;
-        cand_ub += items[item_i].v - frac_ks_rev(items, item_i+1, endi, N, items[item_i].w, remc);
+        cand_ub += items[item_i].v - frac_ks_rev(items, item_i + 1, endi, N, items[item_i].w, remc);
         if (cand_ub > lb) {
-            pq.push({cand_ub, item_i+1, v, c});
+            pq.push({cand_ub, item_i + 1, v, c});
         }
     }
+    return lb;
+}
 
-    std::cout << lb << "\n1\n";
+int main() {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    int sol = knapsack();
+    std::cout << sol << "\n1\n";
 
     auto stop = std::chrono::high_resolution_clock::now();
     double seconds = std::chrono::duration<double>(stop - start).count();
