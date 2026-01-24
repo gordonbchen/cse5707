@@ -68,9 +68,7 @@ double frac_ks_rev(const std::vector<Item>& items, int starti, int endi, int N, 
     return sol;
 }
 
-int main() {
-    auto start = std::chrono::high_resolution_clock::now();
-
+int knapsack() {
     // Parse data.
     int N;
     std::cin >> N;
@@ -131,8 +129,14 @@ int main() {
             pq.push({cand_ub, item_i+1, v, c});
         }
     }
+    return lb;
+}
 
-    std::cout << lb << "\n1\n";
+int main() {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    int sol = knapsack();
+    std::cout << sol << "\n1\n";
 
     auto stop = std::chrono::high_resolution_clock::now();
     double seconds = std::chrono::duration<double>(stop - start).count();
