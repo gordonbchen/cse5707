@@ -36,12 +36,12 @@ double frac_ks(const std::vector<Item>& items, int item_i, int c, int N, int* en
     int idx = std::distance(PS_WEIGHTS.begin(), iterator) - 1;
 
     // sum of fully taken items
-    double solution = (double) (PS_VALUES[idx-1] - PS_VALUES[item_i]);
+    double solution = (double) (PS_VALUES[idx-1] - PS_VALUES[item_i-1]);
 
     // update ending idx
     *endi = idx;
 
-    long long weight_used = PS_WEIGHTS[idx-1] - PS_WEIGHTS[item_i];
+    long long weight_used = PS_WEIGHTS[idx-1] - PS_WEIGHTS[item_i-1];
     int local_rem = c - (int) weight_used;
 
     // add fractional if exists
@@ -110,7 +110,9 @@ int main() {
     // Init lb.
     int remc;
     int lb = ks_greedy(items, C, N, &remc);
-    if (remc == 0) { return lb; }
+    if (remc == 0) {
+        return lb;
+    }
 
     // Solve.
     using Node = std::tuple<double, int, int, int>;  // ub, item_i, v, c.
