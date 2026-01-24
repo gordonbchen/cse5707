@@ -21,7 +21,7 @@ double frac_ks(const std::vector<Item>& items, int item_i, int c, int N) {
             sol += items[i].v;
             continue;
         }
-        sol += (static_cast<double>(c) / static_cast<double>(items[i].w)) * items[i].v;
+        sol += c * items[i].r;
         break;
     }
     return sol;
