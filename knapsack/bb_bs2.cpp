@@ -52,6 +52,7 @@ int ks_greedy(const std::vector<Item>& items, int c, int N, int* remc, bool &ear
     return value;
 }
 
+// TODO: rounding problem w/ reverse.
 int frac_ks(const std::vector<Item>& items, int item_i, int c, int N, int* endi, int* remc) {
     long long current_weight_offset = PS_WEIGHTS[item_i];
     long long target_weight = current_weight_offset + c;
