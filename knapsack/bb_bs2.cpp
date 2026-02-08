@@ -108,6 +108,10 @@ int frac_ks_rev(const std::vector<Item>& items, int starti, int endi, int N, int
 }
 
 int knapsack() {
+    // fast io
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+
     // Parse data.
     int N;
     std::cin >> N;
