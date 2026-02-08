@@ -133,10 +133,6 @@ long long dp(const std::vector<Item>& items, int C, int N) {
 
 // CHANGE 11: int --> long long
 long long knapsack(int &is_complete) {
-    // NEW 2: fast io
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
-
     // Parse data.
     int N;
     std::cin >> N;
@@ -268,6 +264,10 @@ long long knapsack(int &is_complete) {
 
 int main() {
     auto start = std::chrono::high_resolution_clock::now();
+
+    // Fast IO.
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
 
     int is_complete = 1;
     // int --> long long

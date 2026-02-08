@@ -108,10 +108,6 @@ int frac_ks_rev(const std::vector<Item>& items, int starti, int endi, int N, int
 }
 
 int knapsack() {
-    // fast io
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(NULL);
-
     // Parse data.
     int N;
     std::cin >> N;
@@ -192,6 +188,10 @@ int knapsack() {
 
 int main() {
     auto start = std::chrono::high_resolution_clock::now();
+
+    // Fast IO.
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
 
     int sol = knapsack();
     std::cout << sol << "\n1\n";
