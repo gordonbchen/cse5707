@@ -13,8 +13,8 @@ def main():
     num_runs = int(sys.argv[2]) if len(sys.argv) > 2 else 3
     exe_name = "./" + cpp_file.split('.')[0] + ".out"
     subprocess.run(["g++", "-O3", "-std=c++17", cpp_file, "-o", exe_name], check=True)
-    files = glob.glob("data/*.txt")
-    print(f"{'DATASET':<25} {'SOLUTION':<15} {'MEDIAN TIME OVER'} {num_runs} {'RUNS (ms)'}")
+    files = sorted(glob.glob("data/*.txt"))
+    print(f"{'DATASET':<25} {'SOLUTION':<15} {'COMPLETE':<10} {'MEDIAN TIME OVER'} {num_runs} {'RUNS (ms)'}")
 
     for f_path in files:
         d_name = os.path.basename(f_path)
@@ -26,21 +26,24 @@ def main():
             try:
                 with open(f_path, 'r') as infile:
                     # 5 seconds timeout
+                    timeout_time = 5
                     res = subprocess.run(
                         [exe_name],
                         stdin=infile,
                         capture_output=True,
                         text=True,
-                        timeout=5
+                        timeout=timeout_time
                     )
 
                     lines = res.stdout.strip().split('\n')
                     solution = lines[0].strip()
+                    is_complete = lines[1].strip()
                     run_time = float(lines[-1].strip())
                     run_times.append(run_time)
 
             except subprocess.TimeoutExpired:
-                print(f"{d_name:<25} {'SKIPPED':<15} >5s")
+                is_complete = 0
+                print(f"{d_name:<25} {solution:<15} {is_complete:<10} >{timeout_time}s")
                 failed = True
                 break
             except Exception as e:
@@ -49,8 +52,9 @@ def main():
                 break
 
         if not failed:
-            avg_time_ms = 1000 * run_times[num_runs // 2]
-            print(f"{d_name:<25} {solution:<15} {avg_time_ms:.5f} ms")
+            run_times.sort()
+            median_time_ms = 1000 * run_times[num_runs // 2]
+            print(f"{d_name:<25} {solution:<15} {is_complete:<10} {median_time_ms:.5f} ms")
 
     if os.path.exists(exe_name):
         os.remove(exe_name)
