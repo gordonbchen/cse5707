@@ -57,3 +57,17 @@ We came up with a pathological example `data/corr200.txt` for all of our branch 
 `ks_gen.py` is a python script that generated uncorrelated examples (for `hard.txt`). We generated correlated examples by just slightly modifying `ks_gen.py` to generate values = weights + random.
 
 ### Benchmarks
+We timed each solver 100 times on every dataset using our python script `ks_bench.py` and report the median runtime in **MILLISECONDS**. A cell that says ">5s" means that solver timed out. 
+
+| Dataset | dp.cpp | recur.cpp | bb.cpp | bb_rev.cpp | bb_rev_init.cpp | bb_bs.cpp | **bb_bs2.cpp** | hybrid.cpp (WIP) |
+| ------- | ------ | --------- | ------ | ---------- | --------------- | --------- | ---------- | ---------- |
+| tiny.txt | 0.01715 ms | 0.01969 ms | 0.01739 ms | 0.01731 ms | 0.01727 ms | 0.01732 ms | **0.02377 ms** | 0.02852 ms |
+| canon.txt | 0.05711 ms | 0.73356 ms | 0.02848 ms | 0.02837 ms | 0.02779 ms | 0.02832 ms | **0.02765 ms** | 0.02844 ms |
+| sparse.txt | 134.40800 ms | 0.02403 ms | 0.02044 ms | 0.02031 ms | 0.01965 ms | 0.01982 ms | **0.02486 ms** | 0.02502 ms |
+| hard.txt | error | >5s | 995.51700 ms | 441.02500 ms | 443.07900 ms | 28.28760 ms | **10.88810 ms** | 10.62640 ms |
+| corr200.txt | 0.31182 ms | 6.54905 ms | >5s | >5s | >5s | >5s | **0.06508 ms** | 0.05898 ms |
+| corr500.txt | 3.84452 ms | 121.24400 ms | >5s | >5s | >5s | >5s | **5.04323 ms** | 2.24719 ms |
+| corr1k.txt | 271.87800 ms | >5s | >5s | >5s | >5s | >5s | **>5s** | 840.76200 ms |
+| corr10k.txt | 304.85800 ms | >5s | >5s | >5s | >5s | >5s | **2.79798 ms** | 2.41244 ms |
+| corr50k.txt | error | >5s | >5s | >5s | >5s | >5s | **>5s** | 1056.20000 ms |
+| HARD_corr10k.txt | error | >5s | >5s | >5s | >5s | >5s | **>5s** | 507.46200 ms |
