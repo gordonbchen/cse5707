@@ -55,7 +55,7 @@ In an environment with gurobi and numpy, run: `python3 cargo.py`
 
 Gurobi finds the following solution:
 
--   | Front   | Center       | Back
+o   | Front   | Center       | Back
 --- | ------- | ------------ | -----
 C1  | 0       | 0            | 0
 C2  | 10      | 0            | 5
