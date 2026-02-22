@@ -68,6 +68,8 @@ Optimal objective: profit = 12151.57894736842
 # Gurobi Output
 ```
 $ python3 cargo.py
+Optimize a model with 12 rows, 12 columns and 52 nonzeros (Max)
+Model fingerprint: 0xeb496020
 Model has 12 linear objective coefficients
 Coefficient statistics:
   Matrix range     [1e+00, 6e+02]
