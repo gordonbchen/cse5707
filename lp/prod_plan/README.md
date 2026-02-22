@@ -87,6 +87,36 @@ Start of month 6: $\qquad 0.75 (0.53 (0.89 (x_4 - y_{4,4}) - y_{4,5}) + 0.89 (x_
 
 objective: minimize production_cost + deterioration_cost + storage cost
 
+## Algorithm
+See `prod_plan.py` for details on how to implement the objective and constraint calculations in a loop.
+Here we outline the pseudocode.
+
+```
+stocks = [500, 2000, 1000]
+deteriorated_units = 0
+stored_units = 0
+for each month in [3..8]:
+    for prev_month in [month-3..month-1]:
+        # Deteriorate: end of prev month.
+        deteriorated_units += deterioration_rate * stock[prev_month]
+        stock[prev_month] *= (1-deterioration_rate)
+
+        # Storage: start of curr month.
+        stored_units += stock[prev_month]
+
+    # Produce units.
+    stocks.append(produced_units[month])
+
+    for prev_month in [month-2..month]:
+        # Constrain sales to be <= units in stock.
+        addConstraint(sales[prev_month, month] <= stock[prev_month])
+
+        # Sell product.
+        stock[prev_month] -= sales[prev_month, month]
+
+setObjective(15*total_produced + 25*deteriorated_units + 0.75*stored_units)
+```
+
 
 # Solution
 In an environment with `gurobi`, `gurobipy` and `numpy`, run `python3 prod_plan.py`.
