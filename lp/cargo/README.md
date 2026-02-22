@@ -51,7 +51,7 @@ subject to:
 
 
 # Solution
-In an environment with gurobi and numpy, run: `python3 cargo.py`
+In an environment with `gurobi`, `gurobipy` and `numpy`, run: `python3 cargo.py`
 
 Gurobi finds the following solution:
 
