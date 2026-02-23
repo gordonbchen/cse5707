@@ -65,7 +65,7 @@ production cost: $\qquad 15 \sum_{t} x_t$ <br><br>
 
 deterioration cost:
 
-End of month 2: $\qquad 25 (0.47 x_1 + 0.11 x_2)$
+End of month 2: $\qquad 25 (x_0 + 0.47 x_1 + 0.11 x_2)$
 
 End of month 3: $\qquad 25 ((0.53 x_1 - y_{1,3}) + 0.47 (0.89 x_2 - y_{2,3}) + 0.11 (x_3 - y_{3,3}))$
 
