@@ -1,0 +1,3 @@
+[submodule "minicp"]
+	path = minicp
+	url = git@github.com:gordonbchen/minicp.git
