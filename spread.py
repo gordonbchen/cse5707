@@ -2,7 +2,7 @@ import math
 
 
 def calc_intervals(xs: list[tuple[int, int]]) -> tuple[list[tuple[int, int]], list[int], list[int],
-                                                       list[int], list[int], list[int]]:
+                                                       list[int], list[int], list[int], list[tuple[int, int]]]:
     bs = sorted([x[i] for x in xs for i in range(2)])  # sorted bounds.
     bs = list(set(bs))
     print(f"\nbs: {bs}")
@@ -51,15 +51,16 @@ def calc_intervals(xs: list[tuple[int, int]]) -> tuple[list[tuple[int, int]], li
         es2.append(cur_es2)
     print(f"\nes: {es}")
     print(f"es2: {es2}")
-    return intervals, n_in, n_left, n_right, es, es2
+
+    sum_ranges = [(es[i] + n_in[i] * imin, es[i] + n_in[i] * imax) for i, (imin, imax) in enumerate(intervals)]
+    print(f"\nsum_ranges: {sum_ranges}")
+    return intervals, n_in, n_left, n_right, es, es2, sum_ranges
 
 
-def calc_min_ssq(s: int, intervals: list[tuple[int, int]], n_in: list[int], es: list[int], es2: list[int]) -> tuple[float, float]:
+def calc_min_ssq(s: int, sum_ranges: list[tuple[int, int]], n_in: list[int], es: list[int], es2: list[int]) -> tuple[float, float]:
     min_ssq = float("inf")
-    for i, (imin, imax) in enumerate(intervals):
-        sum_min = es[i] + n_in[i] * imin
-        sum_max = es[i] + n_in[i] * imax
-        if s < sum_min or s > sum_max:
+    for i, sum_range in enumerate(sum_ranges):
+        if not s in range(*sum_range):
             continue
 
         v = (s - es[i]) / n_in[i]
@@ -68,12 +69,10 @@ def calc_min_ssq(s: int, intervals: list[tuple[int, int]], n_in: list[int], es: 
     return min_ssq, v
 
 
-def calc_min_ssz(s: int, intervals: list[tuple[int, int]], n_in: list[int], es: list[int], es2: list[int]) -> tuple[int, float]:
+def calc_min_ssz(s: int, sum_ranges: list[tuple[int, int]], n_in: list[int], es: list[int], es2: list[int]) -> tuple[int, float]:
     min_ssz = float("inf")
-    for i, (imin, imax) in enumerate(intervals):
-        sum_min = es[i] + n_in[i] * imin
-        sum_max = es[i] + n_in[i] * imax
-        if s < sum_min or s > sum_max:
+    for i, sum_range in enumerate(sum_ranges):
+        if not s in range(*sum_range):
             continue
 
         v = (s - es[i]) / n_in[i]
@@ -85,21 +84,38 @@ def calc_min_ssz(s: int, intervals: list[tuple[int, int]], n_in: list[int], es: 
     return min_ssz, v
 
 
+def clamp(x, l, u):
+    return min(max(x, l), u)
+
+
+# TODO: finish.
+def update_x_max(intervals: list[tuple[int, int]], n_in: list[int], n_left: list[int], n_right: list[int], es: list[int],
+                 es2: list[int], sum_ranges: list[tuple[int, int]], x: tuple[int, int], vq: float) -> int:
+    x_min, x_max = x
+    for i_min, i_max in intervals:
+        # No filtering if x is in the left since x_max is the value.
+        if x_max <= i_min:
+            return x_max
+
+
 if __name__ == "__main__":
     xs = [(1, 3), (2, 6), (3, 9)]
     print(f"xs: {xs}")
 
-    intervals, n_in, n_left, n_right, es, es2 = calc_intervals(xs)
+    intervals, n_in, n_left, n_right, es, es2, sum_ranges = calc_intervals(xs)
 
     s = 10  # target sum.
     print(f"\ns: {s}")
 
-    min_ssq, vq = calc_min_ssq(s, intervals, n_in, es, es2)
+    min_ssq, vq = calc_min_ssq(s, sum_ranges, n_in, es, es2)
     assert min_ssq == 33.5
     print(f"\nmin_ssq: {min_ssq}")
     print(f"vq: {vq}")
 
-    min_ssz, vz = calc_min_ssz(s, intervals, n_in, es, es2)
+    vs = [clamp(vq, l, u) for (l, u) in xs]
+    print(f"vs: {vs}")
+
+    min_ssz, vz = calc_min_ssz(s, sum_ranges, n_in, es, es2)
     assert min_ssz == 34
     print(f"\nmin_ssz: {min_ssz}")
     print(f"vz: {vz}")
