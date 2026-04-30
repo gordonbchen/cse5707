@@ -44,9 +44,9 @@ def calc_intervals(xs: list[tuple[int, int]], s: int) -> tuple[list[tuple[int, i
         # es gained = (new lefts (value is now their max) - no longer extreme rights) * min of new interval.
         left_gained = n_left[i] - (0 if i == 0 else n_left[i-1])
         right_lost = (len(xs) if i == 0 else n_right[i-1]) - n_right[i]
-        d = (left_gained - right_lost) * intervals[i][0]
-        cur_es += d
-        cur_es2 += d * d * (-1 if d < 0 else 1)  # TODO: does this work?
+        delta_count = left_gained - right_lost
+        cur_es += delta_count * intervals[i][0]
+        cur_es2 += delta_count * intervals[i][0]**2
         es.append(cur_es)
         es2.append(cur_es2)
     print(f"\nes: {es}")
@@ -60,7 +60,7 @@ def calc_intervals(xs: list[tuple[int, int]], s: int) -> tuple[list[tuple[int, i
         if s in range(sum_min, sum_max+1):
             sum_interval_idx = i
             break
-    assert sum_interval_idx > 0, "Failed to find sum in sum intervals."
+    assert sum_interval_idx >= 0, "Failed to find sum in sum intervals."
     print(f"\nsum_ranges: {sum_ranges}")
     print(f"sum_interval_idx: {sum_interval_idx}")
     return intervals, n_in, n_left, n_right, es, es2, sum_ranges, sum_interval_idx
@@ -93,12 +93,12 @@ def update_x_max(
             continue
 
         # solve for maximum d can be increased by without violating max sum of squares.
-        a = 1 + 1/m
+        a = 1 + 1.0/m
         v_new = (s - esi) / m
-        b = 2 * (x_min - v_new)
+        b = 2 * (x_cur - v_new)
         sum_squares = es2i + m*v_new*v_new
         c = sum_squares - max_ss
-        d_opt = (-b + (b*b - 4*a*c)**0.5) / (2*a)  # TODO: negative in sqrt???
+        d_opt = (-b + (b*b - 4*a*c)**0.5) / (2*a)
 
         interval_sum_min = esi + m*intervals[i][0]
         d_max = s - interval_sum_min  # maximum d can be increased by before v too small for interval.
@@ -161,12 +161,12 @@ if __name__ == "__main__":
 
     # Calculate the v Z center.
     v_plus = (s - es[sum_interval_idx]) % n_in[sum_interval_idx]
-    v_minus = (n_in[sum_interval_idx] - v_plus) % n_in[sum_interval_idx]
+    v_minus = n_in[sum_interval_idx] - v_plus
     min_ssz = es2[sum_interval_idx] + v_plus * math.ceil(vq)**2 + v_minus * math.floor(vq)**2
     print(f"\nmin_ssz: {min_ssz}")
     assert min_ssz == 34
 
-    max_ss = 39
+    max_ss = 34
     for x, v in zip(xs, vs):
-        new_x_max = update_x_max(intervals, n_in, n_left, n_right, es, es2, s, sum_interval_idx, max_ss, x, vq)
+        new_x_max = update_x_max(intervals, n_in, n_left, n_right, es, es2, s, sum_interval_idx, max_ss, x, v)
         print(x, new_x_max)
